@@ -237,17 +237,70 @@ def home_comp():
 
 
 ##############################
-@app.get("/profile")
+@app.get("/profile") #, methods=["PATCH"]
 def profile():
     try:
-        profile_html = render_template("_profile.html")
-        return f"""<mixhtml mix-update="main">{ profile_html }</mixhtml>"""
+        user = session.get("user", "")
+        # if not user: return "error"
+        db, cursor = x.db()
+        q = "SELECT * FROM users WHERE user_pk = %s"
+        cursor.execute(q, (user ["user_pk"],))
+        profile = cursor.fetchone()
+        profile.pop("user_password")
+        ic(profile)
+
+        profile_html = render_template("_profile.html", profile=profile)
+        return f"""<browser mix-update="main">{ profile_html }</browser>"""
     except Exception as ex:
         ic(ex)
         return "error"
     finally:
-        pass
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
+##############################
+# @app.route("/api-update-profile", methods=["PATCH"])
+# def api_update_profile():
+    
+#     if request.method == "PATCH":
+#         try:
+#             user = session.get("user", "")
+#             if not user: return "invalid user"
+#             user_pk = user["user_pk"]        
+#             user = x.validate_profile(request.form.get("patch", ""))
+#             user_pk = uuid.uuid4().hex
+
+#             db, cursor = x.db()
+#             q = "INSERT INTO posts VALUES(%s, %s, %s)"
+#             cursor.execute(q, (user_pk, user_first_name, user_last_name))
+#             db.commit()
+#             toast_ok = render_template("___toast_ok.html", message="The world is reading your post !")
+#             profile = {
+#                 "user_first_name": user["user_first_name"],
+#                 "user_last_name": user["user_last_name"],
+#                 "user_username": user["user_username"],
+#             }
+#             html_profile = render_template("_profile.html", profile=profile)
+#             return f"""
+#                 <browser mix-bottom="#toast">{toast_ok}</browser>
+#                 <browser mix-top="#posts">{html_profile}</browser>
+#             """
+#         except Exception as ex:
+#             ic(ex)
+#             if "db" in locals(): db.rollback()
+
+#             # User errors
+#             if "x-error post" in str(ex):
+#                 toast_error = render_template("___toast_error.html", message=f"Post - {x.POST_MIN_LEN} to {x.POST_MAX_LEN} characters")
+#                 return f"""<browser mix-bottom="#toast">{toast_error}</browser>"""
+
+#             # System or developer error
+#             toast_error = render_template("___toast_error.html", message="System under maintenance")
+#             return f"""<browser mix-bottom="#toast">{ toast_error }</browser>""", 500
+
+#         finally:
+#             if "cursor" in locals(): cursor.close()
+#             if "db" in locals(): db.close()    
 
 
 ##############################
