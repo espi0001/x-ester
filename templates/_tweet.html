@@ -1,5 +1,7 @@
 <article class="post" mix-fade-in="5000">
     <img src="{{ url_for('static', filename='images/'~tweet.user_avatar_path) }}" alt="Profile Picture" 
+    
+    
     class="w-8 h-8 rounded-full">
     <div class="post-content">
         <div class="post-header">
@@ -12,8 +14,9 @@
         <p class="text">
             {{ tweet.post_message }}
         </p>
-        <img src="{{ url_for('static', filename='images/' ~ tweet.post_image_path) }}" alt="Post image" 
-        class="w-80">
+        {% if tweet.post_image_path %}
+            <img src="{{ url_for('static', filename='images/' ~ tweet.post_image_path) }}" alt="Post image" class="w-80">
+        {% endif %}
         <div class="post-actions">
             <span class="action"><i class="fa-regular fa-comment"></i> 12</span>
             <span class="action"><i class="fa-solid fa-retweet"></i> 5</span>

@@ -162,12 +162,12 @@ def home():
         trends = cursor.fetchall()
         ic(trends)
 
-        q = "SELECT * FROM users WHERE user_pk != 1 ORDER BY RAND() LIMIT 3"
-        cursor.execute(q)
+        q = "SELECT * FROM users WHERE user_pk != %s ORDER BY RAND() LIMIT 3"
+        cursor.execute(q, (user["user_pk"],))
         suggestions = cursor.fetchall()
         ic(suggestions)
 
-        return render_template("home.html", tweets=tweets, trends=trends)
+        return render_template("home.html", tweets=tweets, trends=trends, user=user, suggestions=suggestions)
     except Exception as ex:
         ic(ex)
         return "error"

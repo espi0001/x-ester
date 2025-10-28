@@ -62,13 +62,16 @@
             <button class="post-btn">Post</button>
 
             <div id="profile_tag">
-                <img src="{{ url_for('static', filename='images/avatar_1.jpg') }}" alt="Profile">
+                <!-- <img src="{{ url_for('static', filename='images/' ~ user.user_avatar_path) }}" alt="Profile"> -->
+                {% if user.user_avatar_path %}
+                    <img src="{{ url_for('static', filename='images/' ~ user.user_avatar_path) }}" alt="Post image" class="w-80">
+                {% endif %}
                 <div>
                     <div class="name">
-                        Santiago
+                        {{ user.user_first_name }}
                     </div>
                     <div class="handle">
-                        @santiago 
+                        @{{ user.user_username }}
                     </div>
                 </div>
                 <i class="fa-solid fa-ellipsis option"></i>
@@ -90,14 +93,14 @@
                     </button>
                 </form>
             </div>
-     
+    
             <div id="posts">
 
                 {% for tweet in tweets: %}
                     {% include "_tweet.html" %}
                 {% endfor %}
             </div>
-       
+    
         </main>
 
         <aside>
@@ -120,24 +123,9 @@
             <div class="mt-2 border-c-gray:+50 border-1 rounded-md pa-2">
                 <h2 class="text-120 text-w-bold">Who to follow</h2>
                 <div class="">
-
-                    <div class="d-flex a-items-center">
-                        <img src="{{ url_for('static', filename='images/avatar_1.jpg') }}" class="w-8 h-8 rounded-full" alt="Profile Picture">
-                        <div class="w-full ml-2">
-                            <p class="">Kimberly Bryant <span class="text-c-gray:+20 text-70">@6Gems</span></p>
-                        
-                        </div>
-                        <button class="px-4 py-1 text-c-white bg-c-black rounded-lg">Follow</button>
-                    </div>
-
-                    <div class="d-flex a-items-center">
-                        <img src="{{ url_for('static', filename='images/avatar_2.jpg') }}" class="w-8 h-8 rounded-full" alt="Profile Picture">
-                        <div class="w-full ml-2">
-                            <p class="">Gustav Henriksen <span class="text-c-gray:+20 text-70">@gustav</span></p>
-                            
-                        </div>
-                        <button class="px-4 py-1 text-c-white bg-c-black rounded-lg">Follow</button>
-                    </div>                    
+                    {% for suggestions in suggestions: %} <!-- get all the rows, one at a time -->
+                        {% include "_who_to_follow.html" %}
+                    {% endfor %}
 
                     <button class="text-c-tealblue text-90">Show more</button>
                 </div>
@@ -147,7 +135,7 @@
     <script src="{{ url_for('static', filename='mixhtml.js') }}"></script>
 
     <script>
-      mojo()
+        mojo()
     </script>
 
 </body>
