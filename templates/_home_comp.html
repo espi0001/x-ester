@@ -1,0 +1,20 @@
+<div class="d-flex flex-row ma-2">
+    <div class="w-auto">
+        <img src="{{ url_for('static', filename='images/avatar_1.jpg') }}" class="w-8 rounded-full">
+    </div>
+    <form action="{{ url_for('api_create_post') }}" mix-post class="d-flex flex-col w-full ml-2">
+        <textarea name="post" placeholder="What is new ?" 
+        class="w-full outline-1 outline-s-solid outline-c-gray:+50 pa-2"></textarea>
+        <button mix-default="Post" mix-await="Posting ..." 
+        class="w-auto ml-auto mt-2 bg-c-black text-c-white py-2 px-12 rounded-xl">
+            Post
+        </button>
+    </form>
+</div>
+
+<div id="posts">
+
+    {% for tweet in tweets: %}
+    {% include "_tweet.html" %}
+    {% endfor %}
+</div>
