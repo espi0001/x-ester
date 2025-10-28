@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Oct 26, 2025 at 03:34 PM
+-- Generation Time: Oct 28, 2025 at 09:32 AM
 -- Server version: 10.6.20-MariaDB-ubu2004
 -- PHP Version: 8.2.27
 
@@ -56,6 +56,7 @@ INSERT INTO `posts` (`post_pk`, `post_user_fk`, `post_message`, `post_total_like
 ('b4b23963a6a4479e918e66f47baef200', '225a9fc15b8f409aa5c8ee7eafee516b', 'test1', 0, ''),
 ('b8f59662ce5b4b58bf19a5fe0eda3122', '225a9fc15b8f409aa5c8ee7eafee516b', 'test2', 0, ''),
 ('bcaa6df8880e411a9c25deaafae2314a', '225a9fc15b8f409aa5c8ee7eafee516b', 'test4', 0, ''),
+('c48313adb3e74e42891d80a31b9188ab', '9c4c0f0310674b3aaf0997867a9f7f99', 'Cool', 0, ''),
 ('e40967338e8c466985dbde4e3f9c712a', '225a9fc15b8f409aa5c8ee7eafee516b', 'Testing', 0, ''),
 ('efaf8b6f98be4a7b8cc7a75d0f83578c', '225a9fc15b8f409aa5c8ee7eafee516b', 'test', 0, '');
 
@@ -77,7 +78,8 @@ CREATE TABLE `trends` (
 
 INSERT INTO `trends` (`trend_pk`, `trend_title`, `trend_message`) VALUES
 ('6543c995d1af4ebcbd5280a4afaa1e2c', 'Politics are rotten', 'Everyone talks and only a few try to do something'),
-('8343c995d1af4ebcbd5280a6afaa1e2d', 'New rocket to the moon', 'A new rocket has been sent towards the moon, but id didn\'t make it');
+('8343c995d1af4ebcbd5280a6afaa1e2d', 'New rocket to the moon', 'A new rocket has been sent towards the moon, but id didn\'t make it'),
+('fe110d373d2d495592e0ff5f8e37f5f1', 'Trend 3', 'Trend 3 message');
 
 -- --------------------------------------------------------
 
@@ -102,10 +104,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_pk`, `user_email`, `user_password`, `user_username`, `user_first_name`, `user_last_name`, `user_avatar_path`, `user_verification_key`, `user_verified_at`) VALUES
-('225a9fc15b8f409aa5c8ee7eafee516b', 'a@a.com', 'scrypt:32768:8:1$wnse70hQwhCvR9tC$724c32a91b5f277201afbb141f9293a93168327df5c9124f482d3c32b8dff991c41629f477dfaee021965f9b15318a4257aad2e933101a4c998ef3c346fc84e4', 'aTest', 'Tester', '', 'avatar_1.jpg', '', 455656),
-('6b48c6095913402eb4841529830e5415', 'a@a1.com', 'scrypt:32768:8:1$rRjuDGIwaA31YlPi$f73f9a059fb3757ba6724d9c94e2a192d8b8d59fcd18d7b11c57e508f1b9cfb94bb7c6fd4f8d632b777e31cd47aef9c95adcad2451786cbb7e7c073fe8cbaf3a', 'santiago1', 'Santiago', '', 'https://avatar.iran.liara.run/public/40', 'ee92b2c86a6c48569138a43ce8bc1d48', 0),
-('805a39cd8c854ee8a83555a308645bf5', 'fullflaskdemomail@gmail.com', 'scrypt:32768:8:1$VlBgiW1xFsZuKRML$a5f61d62ac3f45d42c58cf8362637e717793b8760f026b1b47b7bfec47037abbe13e1c20e8bdc66fc03cc153d0bcf6185e15cf25ad58eb9d344267882dd7e78c', 'santiago', 'Santiago', '', 'avatar_1.jpg', '', 565656),
-('88a93bb5267e443eb0047f421a7a2f34', 'santi@gmail.com', 'scrypt:32768:8:1$PEIO0eliDPqnCCbw$acb791128831bc90030ac363e4b76db196689bd99c1ccde5c2c20a7d4fe909e07129f3f4fd4f086e347375edbb8229e9ba5dc126cc14f6107fb1fc2abf6498f8', 'gustav', 'Gustav', '', 'avatar_2.jpg', '', 54654564);
+('225a9fc15b8f409aa5c8ee7eafee516b', 'a@a.com', 'scrypt:32768:8:1$wnse70hQwhCvR9tC$724c32a91b5f277201afbb141f9293a93168327df5c9124f482d3c32b8dff991c41629f477dfaee021965f9b15318a4257aad2e933101a4c998ef3c346fc84e4', 'aTest', 'Tester', 'Jensen', 'avatar_3.jpg', '', 455656),
+('6b48c6095913402eb4841529830e5415', 'a@a1.com', 'scrypt:32768:8:1$rRjuDGIwaA31YlPi$f73f9a059fb3757ba6724d9c94e2a192d8b8d59fcd18d7b11c57e508f1b9cfb94bb7c6fd4f8d632b777e31cd47aef9c95adcad2451786cbb7e7c073fe8cbaf3a', 'otto22', 'Otto', 'Petersen', 'avatar_6.jpg', 'ee92b2c86a6c48569138a43ce8bc1d48', 0),
+('805a39cd8c854ee8a83555a308645bf5', 'fullflaskdemomail@gmail.com', 'scrypt:32768:8:1$VlBgiW1xFsZuKRML$a5f61d62ac3f45d42c58cf8362637e717793b8760f026b1b47b7bfec47037abbe13e1c20e8bdc66fc03cc153d0bcf6185e15cf25ad58eb9d344267882dd7e78c', 'santiago1', 'Santiago', 'Vestergaard', 'avatar_1.jpg', '', 565656),
+('88a93bb5267e443eb0047f421a7a2f34', 'santi@gmail.com', 'scrypt:32768:8:1$PEIO0eliDPqnCCbw$acb791128831bc90030ac363e4b76db196689bd99c1ccde5c2c20a7d4fe909e07129f3f4fd4f086e347375edbb8229e9ba5dc126cc14f6107fb1fc2abf6498f8', 'gustavl', 'Gustav', 'Larsen', 'avatar_2.jpg', '', 54654564),
+('9c4c0f0310674b3aaf0997867a9f7f99', 'espi0001.dummy@gmail.com', 'scrypt:32768:8:1$l26OmxSwvCtEYHd7$4fb1c0e89fcc7756f47d42cef13f5af5906aeed6e37cf79bfa91ce2d83e47faf504676a9c19332d006717bfef267d4e5a31ba3c090db6ac0ca709b54c8a953be', 'espi', 'Ester', 'Piazza', 'avatar_5.jpg', '', 54654564);
 
 --
 -- Indexes for dumped tables
