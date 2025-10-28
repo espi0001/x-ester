@@ -292,9 +292,11 @@ def api_create_post():
             "post_message": post,
         }
         html_post = render_template("_tweet.html", tweet=tweet)
+        html_post_message = render_template("___post_message.html")
         return f"""
             <browser mix-bottom="#toast">{toast_ok}</browser>
             <browser mix-top="#posts">{html_post}</browser>
+            <browser mix-replace="#post_message">{html_post_message}</browser>
         """
     except Exception as ex:
         ic(ex)

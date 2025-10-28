@@ -82,11 +82,13 @@
 
             <div class="d-flex flex-row ma-2">
                 <div class="w-auto">
-                    <img src="{{ url_for('static', filename='images/avatar_1.jpg') }}" class="w-8 rounded-full">
+                    
+                    {% if user.user_avatar_path %}
+                        <img src="{{ url_for('static', filename='images/' ~ user.user_avatar_path) }}" class="w-8 rounded-full">
+                    {% endif %}
                 </div>
                 <form action="{{ url_for('api_create_post') }}" mix-post class="d-flex flex-col w-full ml-2">
-                    <textarea name="post" placeholder="What is new ?" 
-                    class="w-full outline-1 outline-s-solid outline-c-gray:+50 pa-2"></textarea>
+                    {% include "___post_message.html" %}
                     <button mix-default="Post" mix-await="Posting ..." 
                     class="w-auto ml-auto mt-2 bg-c-tealblue text-c-white py-2 px-12 rounded-xl cursor-pointer">
                         Post
