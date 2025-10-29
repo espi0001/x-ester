@@ -227,7 +227,7 @@ def home_comp():
         tweets = cursor.fetchall()
         ic(tweets)
 
-        html = render_template("_home_comp.html", tweets=tweets)
+        html = render_template("_home_comp.html", tweets=tweets, user=user)
         return f"""<mixhtml mix-update="main">{ html }</mixhtml>"""
     except Exception as ex:
         ic(ex)
@@ -237,70 +237,96 @@ def home_comp():
 
 
 ##############################
-@app.get("/profile") #, methods=["PATCH"]
+# @app.get("/profile") #, methods=["PATCH"]
+# def profile():
+#     try:
+#         user = session.get("user", "")
+#         # if not user: return "error"
+#         db, cursor = x.db()
+#         q = "SELECT * FROM users WHERE user_pk = %s"
+#         cursor.execute(q, (user ["user_pk"],))
+#         profile = cursor.fetchone()
+#         profile.pop("user_password")
+#         ic(profile)
+
+#         profile_html = render_template("_profile.html", x=x, profile=profile)
+#         return f"""<browser mix-update="main">{ profile_html }</browser>"""
+#     except Exception as ex:
+#         ic(ex)
+#         return "error"
+#     finally:
+#         if "cursor" in locals(): cursor.close()
+#         if "db" in locals(): db.close()
+
+##############################
+@app.get("/profile")
 def profile():
     try:
         user = session.get("user", "")
-        # if not user: return "error"
-        db, cursor = x.db()
+        if not user: return "error"
         q = "SELECT * FROM users WHERE user_pk = %s"
-        cursor.execute(q, (user ["user_pk"],))
-        profile = cursor.fetchone()
-        profile.pop("user_password")
-        ic(profile)
-
-        profile_html = render_template("_profile.html", profile=profile)
+        db, cursor = x.db()
+        cursor.execute(q, (user["user_pk"],))
+        user = cursor.fetchone()
+        profile_html = render_template("_profile.html", x=x, user=user)
         return f"""<browser mix-update="main">{ profile_html }</browser>"""
     except Exception as ex:
         ic(ex)
         return "error"
     finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
+        pass
+
 
 ##############################
-# @app.route("/api-update-profile", methods=["PATCH"])
-# def api_update_profile():
-    
-#     if request.method == "PATCH":
-#         try:
-#             user = session.get("user", "")
-#             if not user: return "invalid user"
-#             user_pk = user["user_pk"]        
-#             user = x.validate_profile(request.form.get("patch", ""))
-#             user_pk = uuid.uuid4().hex
+@app.route("/api-update-profile", methods=["POST"])
+def api_update_profile():
 
-#             db, cursor = x.db()
-#             q = "INSERT INTO posts VALUES(%s, %s, %s)"
-#             cursor.execute(q, (user_pk, user_first_name, user_last_name))
-#             db.commit()
-#             toast_ok = render_template("___toast_ok.html", message="The world is reading your post !")
-#             profile = {
-#                 "user_first_name": user["user_first_name"],
-#                 "user_last_name": user["user_last_name"],
-#                 "user_username": user["user_username"],
-#             }
-#             html_profile = render_template("_profile.html", profile=profile)
-#             return f"""
-#                 <browser mix-bottom="#toast">{toast_ok}</browser>
-#                 <browser mix-top="#posts">{html_profile}</browser>
-#             """
-#         except Exception as ex:
-#             ic(ex)
-#             if "db" in locals(): db.rollback()
+    try:
 
-#             # User errors
-#             if "x-error post" in str(ex):
-#                 toast_error = render_template("___toast_error.html", message=f"Post - {x.POST_MIN_LEN} to {x.POST_MAX_LEN} characters")
-#                 return f"""<browser mix-bottom="#toast">{toast_error}</browser>"""
+        user = session.get("user", "")
+        if not user: return "invalid user"
 
-#             # System or developer error
-#             toast_error = render_template("___toast_error.html", message="System under maintenance")
-#             return f"""<browser mix-bottom="#toast">{ toast_error }</browser>""", 500
+        # Validate
+        user_email = x.validate_user_email()
+        user_username = x.validate_user_username()
+        user_first_name = x.validate_user_first_name()
 
-#         finally:
-#             if "cursor" in locals(): cursor.close()
-#             if "db" in locals(): db.close()    
+        # Connect to the database
+        q = "UPDATE users SET user_email = %s, user_username = %s, user_first_name = %s WHERE user_pk = %s"
+        db, cursor = x.db()
+        cursor.execute(q, (user_email, user_username, user_first_name, user["user_pk"]))
+        db.commit()
+
+        # Response to the browser
+        toast_ok = render_template("___toast_ok.html", message="Profile updated successfully")
+        return f"""
+            <browser mix-bottom="#toast">{toast_ok}</browser>
+            <browser mix-update="#profile_tag .name">{user_first_name}</browser>
+            <browser mix-update="#profile_tag .handle">{user_username}</browser>
+            
+        """, 200
+    except Exception as ex:
+        ic(ex)
+        # User errors
+        if ex.args[1] == 400:
+            toast_error = render_template("___toast_error.html", message=ex.args[0])
+            return f"""<mixhtml mix-update="#toast">{ toast_error }</mixhtml>""", 400
+        
+        # Database errors
+        if "Duplicate entry" and user_email in str(ex): 
+            toast_error = render_template("___toast_error.html", message="Email already registered")
+            return f"""<mixhtml mix-update="#toast">{ toast_error }</mixhtml>""", 400
+        if "Duplicate entry" and user_username in str(ex): 
+            toast_error = render_template("___toast_error.html", message="Username already registered")
+            return f"""<mixhtml mix-update="#toast">{ toast_error }</mixhtml>""", 400
+        
+        # System or developer error
+        toast_error = render_template("___toast_error.html", message="System under maintenance")
+        return f"""<mixhtml mix-bottom="#toast">{ toast_error }</mixhtml>""", 500
+
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 
 ##############################

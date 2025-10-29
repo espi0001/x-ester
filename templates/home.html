@@ -79,8 +79,8 @@
         </nav>
 
         <main>
-
-            <div class="d-flex flex-row ma-2">
+            {% include "_home_comp.html" %}
+            <!-- <div class="d-flex flex-row ma-2">
                 <div class="w-auto">
                     
                     {% if user.user_avatar_path %}
@@ -101,7 +101,7 @@
                 {% for tweet in tweets: %}
                     {% include "_tweet.html" %}
                 {% endfor %}
-            </div>
+            </div> -->
     
         </main>
 
