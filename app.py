@@ -7,6 +7,9 @@ import time
 import uuid
 import os
 
+import traceback
+# traceback.print_exc()
+
 from icecream import ic
 ic.configureOutput(prefix=f'----- | ', includeContext=True)
 
@@ -29,10 +32,9 @@ def _____USER_____(): pass
 
 @app.get("/")
 def view_index():
-
     return render_template("index.html")
 
-##############################
+############# LOGIN #############
 @app.route("/login", methods=["GET", "POST"])
 @x.no_cache
 def login():
@@ -83,7 +85,7 @@ def login():
 
 
 
-##############################
+############# SIGNUP #############
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
 
@@ -144,9 +146,9 @@ def signup():
 
 
 
-##############################
+############# HOME #############
 @app.get("/home")
-@x.no_cache
+@x.no_cache # prevents showing cached content after logout / "back" button
 def home():
     try:
         user = session.get("user", "")
@@ -175,7 +177,7 @@ def home():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 
-##############################
+############## VERIFY ACCOUNT ################
 @app.route("/verify-account", methods=["GET"])
 def verify_account():
     try:
@@ -200,7 +202,7 @@ def verify_account():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 
-##############################
+############# LOGOUT #############
 @app.get("/logout")
 def logout():
     try:
@@ -214,7 +216,7 @@ def logout():
 
 
 
-##############################
+############## HOME COMP ################
 @app.get("/home-comp")
 def home_comp():
     try:
@@ -236,7 +238,7 @@ def home_comp():
         pass
 
 
-##############################
+############# PROFILE #############
 @app.get("/profile")
 def profile():
     try:
@@ -257,7 +259,7 @@ def profile():
         pass
 
 
-##############################
+############### UPDATE PROFILE ###############
 @app.route("/api-update-profile", methods=["POST"])
 def api_update_profile():
 
@@ -309,7 +311,7 @@ def api_update_profile():
         if "db" in locals(): db.close()
 
 
-##############################
+############# Like tweet #############
 @app.patch("/like-tweet")
 @x.no_cache
 def api_like_tweet():
@@ -328,7 +330,7 @@ def api_like_tweet():
         if "db" in locals(): db.close()
 
 
-##############################
+############### CREATE POST ###############
 @app.route("/api-create-post", methods=["POST"])
 def api_create_post():
     try:
@@ -350,12 +352,14 @@ def api_create_post():
             "user_avatar_path": user["user_avatar_path"],
             "post_message": post,
         }
+        html_post_container = render_template("___post_container.html")
         html_post = render_template("_tweet.html", tweet=tweet)
         html_post_message = render_template("___post_message.html")
         return f"""
             <browser mix-bottom="#toast">{toast_ok}</browser>
             <browser mix-top="#posts">{html_post}</browser>
-            <browser mix-replace="#post_message">{html_post_message}</browser>
+        <browser mix-replace="#post_message">{html_post_message}</browser>
+            <browser mix-replace="#post_container">{html_post_container}</browser>
         """
     except Exception as ex:
         ic(ex)
@@ -377,16 +381,17 @@ def api_create_post():
 
 
 
-##############################
+############### SEARCH ###############
 @app.post("/api-search")
 def api_search():
     try:
         # TODO: The input seach_for must be validated
         search_for = request.form.get("search_for") #point to the input field
+        part_of_query = f"%{search_for}%"
         ic(search_for)
         db, cursor = x.db()
-        q = "SELECT * FROM users"
-        cursor.execute(q)
+        q = "SELECT * FROM users WHERE user_username LIKE %s"
+        cursor.execute(q, (part_of_query,))
         users = cursor.fetchall()
         orange_box = render_template("_orange_box.html", users=users)
         return f"""
