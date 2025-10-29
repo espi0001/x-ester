@@ -386,7 +386,13 @@ def api_create_post():
 def api_search():
     try:
         # TODO: The input seach_for must be validated
-        search_for = request.form.get("search_for") #point to the input field
+        search_for = request.form.get("search_for", "") # point to the input field
+        
+        if not search_for:
+            return f"""
+            <browser mix-remove="#search_results"></browser>
+            """
+        
         part_of_query = f"%{search_for}%"
         ic(search_for)
         db, cursor = x.db()

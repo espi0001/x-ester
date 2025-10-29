@@ -84,8 +84,8 @@
         </main>
 
         <aside>
-            <form id="search_form" action="/api-search" mix-post class="p-relative"> <!-- could call the id="frm_search" -->
-                <input name="search_for" type="text" placeholder="Search Twitter">
+            <form id="search_form" action="/api-search" class="p-relative"> <!-- could call the id="frm_search" -->
+                <input mix-post="/api-search" mix-input mix-delay="1000" name="search_for" type="text" placeholder="Search Twitter">
                 <button class="cursor-pointer">Search</button>
                 
             </form>
