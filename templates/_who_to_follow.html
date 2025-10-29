@@ -1,6 +1,7 @@
 <div class="d-flex a-items-center">
     {% if suggestions.user_avatar_path %}
-        <img src="{{ url_for('static', filename='images/' ~ suggestions.user_avatar_path) }}" alt="Profile Picture" class="w-8 h-8 rounded-full">
+        <img src="{{ url_for('static', filename='images/' ~ (suggestions.user_avatar_path if suggestions.user_avatar_path else 'unknown.jpg')) }}"
+            class="w-8 h-8 rounded-full" alt="Profile Picture">
     {% endif %}
     <div class="w-full ml-2">
         <p class="">{{ suggestions.user_first_name }} <span class="text-c-gray:+20 text-70">@{{ suggestions.user_username }}</span></p>
