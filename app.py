@@ -237,28 +237,6 @@ def home_comp():
 
 
 ##############################
-# @app.get("/profile") #, methods=["PATCH"]
-# def profile():
-#     try:
-#         user = session.get("user", "")
-#         # if not user: return "error"
-#         db, cursor = x.db()
-#         q = "SELECT * FROM users WHERE user_pk = %s"
-#         cursor.execute(q, (user ["user_pk"],))
-#         profile = cursor.fetchone()
-#         profile.pop("user_password")
-#         ic(profile)
-
-#         profile_html = render_template("_profile.html", x=x, profile=profile)
-#         return f"""<browser mix-update="main">{ profile_html }</browser>"""
-#     except Exception as ex:
-#         ic(ex)
-#         return "error"
-#     finally:
-#         if "cursor" in locals(): cursor.close()
-#         if "db" in locals(): db.close()
-
-##############################
 @app.get("/profile")
 def profile():
     try:
@@ -268,6 +246,8 @@ def profile():
         db, cursor = x.db()
         cursor.execute(q, (user["user_pk"],))
         user = cursor.fetchone()
+        user.pop("user_password")
+        ic(user)
         profile_html = render_template("_profile.html", x=x, user=user)
         return f"""<browser mix-update="main">{ profile_html }</browser>"""
     except Exception as ex:
@@ -394,6 +374,31 @@ def api_create_post():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()    
 
+
+
+
+##############################
+@app.post("/api-search")
+def api_search():
+    try:
+        # TODO: The input seach_for must be validated
+        search_for = request.form.get("search_for") #point to the input field
+        ic(search_for)
+        db, cursor = x.db()
+        q = "SELECT * FROM users"
+        cursor.execute(q)
+        users = cursor.fetchall()
+        orange_box = render_template("_orange_box.html", users=users)
+        return f"""
+            <browser mix-remove="#search_results"></browser>
+            <browser mix-bottom="#search_form">{orange_box}</browser>
+        """
+    except Exception as ex:
+        ic(ex)
+        return str(ex)
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close() 
 
 
 

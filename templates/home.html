@@ -79,37 +79,17 @@
         </nav>
 
         <main>
-            {% include "_home_comp.html" %}
-            <!-- <div class="d-flex flex-row ma-2">
-                <div class="w-auto">
-                    
-                    {% if user.user_avatar_path %}
-                        <img src="{{ url_for('static', filename='images/' ~ user.user_avatar_path) }}" class="w-8 rounded-full">
-                    {% endif %}
-                </div>
-                <form action="{{ url_for('api_create_post') }}" mix-post class="d-flex flex-col w-full ml-2">
-                    {% include "___post_message.html" %}
-                    <button mix-default="Post" mix-await="Posting ..." 
-                    class="w-auto ml-auto mt-2 bg-c-tealblue text-c-white py-2 px-12 rounded-xl cursor-pointer">
-                        Post
-                    </button>
-                </form>
-            </div>
-    
-            <div id="posts">
-
-                {% for tweet in tweets: %}
-                    {% include "_tweet.html" %}
-                {% endfor %}
-            </div> -->
+            {% include "_home_comp.html" %} <!-- everyting is in the _home_comp instead of here -->
     
         </main>
 
         <aside>
-            <form action="">
-                <input type="text" placeholder="Search Twitter">
-                <button>Search</button>
+            <form id="search_form" action="/api-search" mix-post class="p-relative"> <!-- could call the id="frm_search" -->
+                <input name="search_for" type="text" placeholder="Search Twitter">
+                <button class="cursor-pointer">Search</button>
+                
             </form>
+
 
             <div class="border-1 border-c-gray:+50 rounded-md pa-3">
                 <h2 class="text-120 text-c-black text-w-bold">What's happening now</h2>
